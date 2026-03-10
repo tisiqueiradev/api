@@ -34,57 +34,103 @@ API em **Node.js** para criar, consultar, atualizar e deletar pedidos com **Post
 ## Clonar repositório
 
 ```bash
-git clone <https://github.com/tisiqueiradev/api.git>
-cd <api>
-Instalar dependências
+git clone <https://github.com/tisiqueiradev/api>
+cd <orders-api>
+```
+
+---
+
+## Instalar dependências
+
+```bash
 npm install
 # ou, se usar yarn:
 yarn install
-Comandos úteis
-npm install        # Instala dependências
+```
+
+---
+
+## Comandos úteis
+
+```bash
+npm install         # Instala dependências
 npm run dev         # Rodar em modo desenvolvimento
 npm start           # Rodar em modo produção
 docker-compose up   # Iniciar containers
 docker-compose down # Parar containers
-Variáveis de ambiente
+```
 
-Use o arquivo .env.example como base:
+---
 
+## Variáveis de ambiente
+
+Use o arquivo `.env.example` como base:
+
+```env
 DB_HOST=localhost
 DB_PORT=5432
 DB_USER=root
 DB_PASSWORD=root
 DB_NAME=api
 JWT_SECRET=minha_chave_secreta
+```
 
-Crie um .env na raiz do projeto com esses valores.
+Crie um `.env` na raiz do projeto com esses valores.
 
-Subir o banco
+---
+
+## Subir o banco
+
+```bash
 docker-compose up -d
+```
 
-Os scripts dentro da pasta scripts/ criam as tabelas e inserem dados iniciais no primeiro bootstrap do container/volume.
+> Os scripts dentro da pasta `scripts/` criam as tabelas e inserem dados iniciais no primeiro bootstrap do container/volume.
 
-Rodar a API
+---
+
+## Rodar a API
+
+```bash
 node src/index.js
+```
 
 Servidor disponível em:
 
+```text
 http://localhost:3000
-Swagger
+```
+
+---
+
+## Swagger
 
 Documentação:
 
+```text
 http://localhost:3000/docs/
-Login de exemplo
+```
+
+---
+
+## Login de exemplo
+
+```json
 {
   "username": "admin",
   "password": "123456"
 }
+```
 
-Depois do login, use o token JWT nas rotas protegidas.
+> Depois do login, use o token JWT nas rotas protegidas.
 
-Exemplo de request
-Criar pedido (POST /order)
+---
+
+## Exemplo de request
+
+### Criar pedido (POST /order)
+
+```bash
 curl -X POST http://localhost:3000/order \
   -H "Authorization: Bearer <SEU_TOKEN_JWT>" \
   -H "Content-Type: application/json" \
@@ -100,6 +146,13 @@ curl -X POST http://localhost:3000/order \
       }
     ]
   }'
-Consultar pedidos (GET /order/list)
+```
+
+### Consultar pedidos (GET /order/list)
+
+```bash
 curl -X GET http://localhost:3000/order/list \
   -H "Authorization: Bearer <SEU_TOKEN_JWT>"
+```
+
+---
