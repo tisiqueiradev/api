@@ -21,6 +21,14 @@ const server = http.createServer((request, response) => {
   const parsedUrl = url.parse(request.url, true);
   let { pathname } = parsedUrl;
   let id;
+  const splitEndpoint = pathname.split('/').filter(Boolean);
+  let normalizedPathname = pathname;
+
+  // fazer o split do id para rotas dinamicas
+  if (splitEndpoint.length > 1 && splitEndpoint[1] !== 'list') {
+    normalizedPathname = `/${splitEndpoint[0]}/:id`;
+    id = splitEndpoint[1];
+  }
 
   //Rotas que vamos proteger com o Login/JWT
   const protectedRoutes = [
@@ -30,7 +38,7 @@ const server = http.createServer((request, response) => {
   ];
 
   //validação das rotas prtegidas
-  if (protectedRoutes.includes(pathname)) {
+  if (protectedRoutes.includes(normalizedPathname)) {
 
     //obtendo a autorização
     const authHeader = request.headers['authorization'];
@@ -151,13 +159,7 @@ const server = http.createServer((request, response) => {
   }
 
   // === Processar API normal ===
-  const splitEndpoint = pathname.split('/').filter(Boolean);
-
-  //fazer o split do id.
-  if (splitEndpoint.length > 1 && splitEndpoint[1] !== 'list') {
-    pathname = `/${splitEndpoint[0]}/:id`;
-    id = splitEndpoint[1];
-  }
+  pathname = normalizedPathname;
 
   const route = routes.find(
     (routeObj) => routeObj.endpoint === pathname && routeObj.method === request.method

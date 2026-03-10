@@ -16,8 +16,8 @@ function handleControllerError(error, response) {
 // Valida o corpo da requisição para criar/atualizar um pedido
 // Retorna false e envia resposta HTTP se algum campo obrigatório estiver ausente
 function validateOrderPayload(body, response) {
-  if (!body.items) {
-    response.send(400, { error: 'Items is required' });
+  if (!body.items || !Array.isArray(body.items) || body.items.length === 0) {
+    response.send(400, { error: 'Items is required and cannot be empty' });
     return false;
   }
 
@@ -26,14 +26,28 @@ function validateOrderPayload(body, response) {
     return false;
   }
 
-  if (!body.valorTotal) {
-    response.send(400, { error: 'valorTotal is required' });
+  if (!body.valorTotal || body.valorTotal <= 0) {
+    response.send(400, { error: 'valorTotal must be greater than 0' });
     return false;
+  }
+
+  for (const item of body.items) { // ✅ plural
+    if (!item.idItem || item.idItem <= 0) {
+      response.send(400, { error: 'idItem must be greater than 0' });
+      return false; // ✅ interrompe
+    }
+    if (!item.quantidadeItem || item.quantidadeItem <= 0) {
+      response.send(400, { error: 'quantidadeItem must be greater than 0' });
+      return false;
+    }
+    if (!item.valorItem || item.valorItem <= 0) {
+      response.send(400, { error: 'valorItem must be greater than 0' });
+      return false;
+    }
   }
 
   return true;
 }
-
 module.exports = {
 
   // GET /order/list
@@ -77,7 +91,7 @@ module.exports = {
       const { body } = request;
 
       if (!validateOrderPayload(body, response)) {
-        return;
+        return true;
       }
 
       const mapperOrder = mapperToDb(body);
